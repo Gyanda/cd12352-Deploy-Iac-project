@@ -1,7 +1,81 @@
 Description: CD12352 - Infrastructure as Code Project - Network
 
 Parameters:
-  # Add your parameters here
+  ProjectName:
+    Type: String
+    Description: Project name for gs-udacity-iac-project resources
+
+  PublicSubnet1CIDR:
+    Type: String
+    Description: Please enter the IP range (CIDR notation) for the subnet
+    Default: "10.0.0.0/24"
+  
+  PrivateSubnet1CIDR:
+    Type: String
+    Description: Please enter the IP range (CIDR notation) for the subnet
+    Default: "10.0.1.0/24"
+  
+  PublicSubnet2CIDR:
+    Type: String
+    Description: Please enter the IP range (CIDR notation) for the subnet
+    Default: "10.0.2.0/24"
+  
+  PrivateSubnet2CIDR:
+    Type: String
+    Description: Please enter the IP range (CIDR notation) for the subnet
+    Default: "10.0.3.0/24"
 
 Resources:
-  # Add your resources here
+  VPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsHostnames: true
+      Tags:
+        - Key: Name
+          Value: !Ref ProjectName
+
+  PublicSubnet1: 
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      AvailabilityZone: !Select [ 0, !GetAZs '' ]
+      CidrBlock: !Ref PublicSubnet1CIDR
+      MapPublicIpOnLaunch: false
+      Tags: 
+        - Key: Name 
+          Value: !Sub ${ProjectName}-public-1
+    
+  PublicSubnet2: 
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      AvailabilityZone: !Select [ 1, !GetAZs '' ]
+      CidrBlock: !Ref PublicSubnet2CIDR
+      MapPublicIpOnLaunch: false
+      Tags: 
+        - Key: Name 
+          Value: !Sub ${ProjectName}-public-2
+  
+  PrivateSubnet1: 
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      AvailabilityZone: !Select [ 0, !GetAZs '' ]
+      CidrBlock: !Ref PrivateSubnet1CIDR
+      MapPublicIpOnLaunch: false
+      Tags: 
+        - Key: Name 
+          Value: !Sub ${ProjectName}-private-1
+
+  PrivateSubnet2: 
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      AvailabilityZone: !Select [ 1, !GetAZs '' ]
+      CidrBlock: !Ref PrivateSubnet2CIDR
+      MapPublicIpOnLaunch: false
+      Tags: 
+        - Key: Name 
+          Value: !Sub ${ProjectName}-private-2
+
