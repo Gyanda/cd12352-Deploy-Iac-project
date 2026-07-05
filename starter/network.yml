@@ -35,6 +35,19 @@ Resources:
         - Key: Name
           Value: !Ref ProjectName
 
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: !Ref ProjectName
+
+  InternetGatewayAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      InternetGatewayId: !Ref InternetGateway
+      VpcId: !Ref VPC
+
   PublicSubnet1: 
     Type: AWS::EC2::Subnet
     Properties:
@@ -79,3 +92,26 @@ Resources:
         - Key: Name 
           Value: !Sub ${ProjectName}-private-2
 
+Outputs:
+  VpcId:
+    Description: A reference to the created VPC
+    Value: !Ref VPC
+    Export:
+      Name: !Sub ${ProjectName}-VPCID
+  
+  PublicSubnets:
+    Description: A list of the public subnets
+    Value: !Join [ ",", [ !Ref PublicSubnet1, !Ref PublicSubnet2 ]]
+    Export:
+      Name: !Sub ${ProjectName}-PUB-SNIDS
+  
+  PrivateSubnet1:
+    Description: A reference to the private subnet1
+    Value: !Ref PrivateSubnet1
+    Export:
+      Name: !Sub ${ProjectName}-pri1-SNID
+  PrivateSubnet2:
+    Description: A reference to the private subnet2
+    Value: !Ref PrivateSubnet2
+    Export:
+      Name: !Sub ${ProjectName}-pri2-SNID
